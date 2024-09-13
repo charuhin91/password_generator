@@ -1,6 +1,6 @@
 /**
  * Secure Password Generator
- * Generates cryptographically secure random passwords
+ * Generates cryptographically secure passwords with customizable options
  */
 
 class PasswordGenerator {
@@ -14,7 +14,7 @@ class PasswordGenerator {
     }
 
     /**
-     * Generate a secure random password
+     * Generate a secure password
      * @param {Object} options - Password generation options
      * @param {number} options.length - Password length (default: 12)
      * @param {boolean} options.lowercase - Include lowercase letters (default: true)
@@ -42,52 +42,67 @@ class PasswordGenerator {
         if (numbers) characterPool += this.characterSets.numbers;
         if (symbols) characterPool += this.characterSets.symbols;
 
-        // Ensure at least one character type is selected
-        if (characterPool.length === 0) {
-            throw new Error('At least one character type must be selected');
-        }
-
         // Generate password using cryptographically secure random values
-        let password = '';
+        const passwordArray = new Array(length);
         const randomValues = new Uint32Array(length);
         
         // Use crypto.getRandomValues for secure randomness
         if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
             crypto.getRandomValues(randomValues);
         } else {
-            throw new Error('Crypto API not available in this environment');
+            throw new Error('Cryptographically secure random number generator not available');
         }
 
         for (let i = 0; i < length; i++) {
             const randomIndex = randomValues[i] % characterPool.length;
-            password += characterPool[randomIndex];
+            passwordArray[i] = characterPool[randomIndex];
         }
 
-        return password;
+        // Ensure at least one character from each selected character set is included
+        this._ensureCharacterVariety(passwordArray, options, characterPool);
+
+        return passwordArray.join('');
     }
 
     /**
      * Validate generation options
-     * @private
+     * @param {number} length - Password length
+     * @param {Object} characterOptions - Character type options
      */
-    _validateOptions(length, charOptions) {
-        if (length < 4) {
-            throw new Error('Password length must be at least 4 characters');
-        }
-        
-        if (length > 128) {
-            throw new Error('Password length cannot exceed 128 characters');
+    _validateOptions(length, characterOptions) {
+        if (length < 4 || length > 128) {
+            throw new Error('Password length must be between 4 and 128 characters');
         }
 
-        if (!Number.isInteger(length)) {
-            throw new Error('Password length must be an integer');
+        const hasSelectedCharacters = Object.values(characterOptions).some(value => value);
+        if (!hasSelectedCharacters) {
+            throw new Error('At least one character type must be selected');
         }
+    }
 
-        // Check if at least one character type is enabled
-        const hasCharacterType = Object.values(charOptions).some(value => value === true);
-        if (!hasCharacterType) {
-            throw new Error('At least one character type must be enabled');
-        }
+    /**
+     * Ensure password contains at least one character from each selected character set
+     * @param {Array} passwordArray - Password character array
+     * @param {Object} options - Character type options
+     * @param {string} characterPool - Available character pool
+     */
+    _ensureCharacterVariety(passwordArray, options, characterPool) {
+        const selectedSets = [];
+        if (options.lowercase) selectedSets.push(this.characterSets.lowercase);
+        if (options.uppercase) selectedSets.push(this.characterSets.uppercase);
+        if (options.numbers) selectedSets.push(this.characterSets.numbers);
+        if (options.symbols) selectedSets.push(this.characterSets.symbols);
+
+        // For each required character set, ensure at least one character is present
+        selectedSets.forEach(charSet => {
+            const hasCharFromSet = passwordArray.some(char => charSet.includes(char));
+            if (!hasCharFromSet) {
+                // Replace a random position with a character from the missing set
+                const randomPosition = Math.floor(Math.random() * passwordArray.length);
+                const randomChar = charSet[Math.floor(Math.random() * charSet.length)];
+                passwordArray[randomPosition] = randomChar;
+            }
+        });
     }
 
     /**
@@ -97,10 +112,6 @@ class PasswordGenerator {
      * @returns {string[]} Array of generated passwords
      */
     generateMultiplePasswords(count = 5, options = {}) {
-        if (count < 1 || count > 50) {
-            throw new Error('Count must be between 1 and 50');
-        }
-
         const passwords = [];
         for (let i = 0; i < count; i++) {
             passwords.push(this.generatePassword(options));
@@ -114,45 +125,27 @@ class PasswordGenerator {
      * @returns {number} Strength score
      */
     calculateStrength(password) {
-        if (!password) return 0;
-
         let score = 0;
-        const length = password.length;
-
+        
         // Length score (max 40 points)
-        score += Math.min(length * 2, 40);
-
+        score += Math.min(password.length * 2, 40);
+        
         // Character variety score (max 60 points)
         const hasLowercase = /[a-z]/.test(password);
         const hasUppercase = /[A-Z]/.test(password);
         const hasNumbers = /\d/.test(password);
-        const hasSymbols = /[^a-zA-Z0-9]/.test(password);
-
-        const varietyCount = [hasLowercase, hasUppercase, hasNumbers, hasSymbols]
-            .filter(Boolean).length;
+        const hasSymbols = /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password);
         
+        const varietyCount = [hasLowercase, hasUppercase, hasNumbers, hasSymbols].filter(Boolean).length;
         score += varietyCount * 15; // 15 points per character type
-
+        
         return Math.min(score, 100);
-    }
-
-    /**
-     * Get strength description based on score
-     * @param {number} score - Strength score (0-100)
-     * @returns {string} Strength description
-     */
-    getStrengthDescription(score) {
-        if (score >= 80) return 'Very Strong';
-        if (score >= 60) return 'Strong';
-        if (score >= 40) return 'Good';
-        if (score >= 20) return 'Weak';
-        return 'Very Weak';
     }
 }
 
-// Export for use in different environments
+// Export for use in Node.js and browsers
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = PasswordGenerator;
-} else if (typeof window !== 'undefined') {
+} else {
     window.PasswordGenerator = PasswordGenerator;
 }
