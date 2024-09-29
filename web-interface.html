@@ -23,37 +23,37 @@
 
         .container {
             background: white;
+            padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             max-width: 500px;
             width: 100%;
         }
 
         h1 {
-            color: #333;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
             color: #555;
         }
 
         input[type="number"] {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e5e9;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 1rem;
             transition: border-color 0.3s;
         }
 
@@ -65,14 +65,14 @@
         .checkbox-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 10px;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.5rem;
         }
 
         .checkbox-item input[type="checkbox"] {
@@ -84,9 +84,9 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 1rem 2rem;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
@@ -102,8 +102,8 @@
         }
 
         .result {
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 2rem;
+            padding: 1.5rem;
             background: #f8f9fa;
             border-radius: 8px;
             border-left: 4px solid #667eea;
@@ -111,29 +111,28 @@
 
         .password-display {
             font-family: 'Courier New', monospace;
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 1.2rem;
+            font-weight: 600;
             color: #333;
             word-break: break-all;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
         }
 
         .strength-meter {
             height: 8px;
             background: #e9ecef;
             border-radius: 4px;
-            margin: 10px 0;
             overflow: hidden;
+            margin-bottom: 0.5rem;
         }
 
         .strength-fill {
             height: 100%;
-            border-radius: 4px;
             transition: all 0.3s ease;
         }
 
         .strength-text {
-            font-size: 14px;
+            font-size: 0.9rem;
             color: #666;
         }
 
@@ -141,11 +140,11 @@
             background: #28a745;
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
         }
 
         .copy-btn:hover {
@@ -159,32 +158,32 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Secure Password Generator</h1>
+        <h1>🔒 Secure Password Generator</h1>
         
         <form id="passwordForm">
             <div class="form-group">
-                <label for="length">Password Length:</label>
-                <input type="number" id="length" min="4" max="128" value="12">
+                <label for="passwordLength">Password Length:</label>
+                <input type="number" id="passwordLength" min="4" max="128" value="16">
             </div>
 
             <div class="form-group">
                 <label>Character Types:</label>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="lowercase" checked>
-                        <label for="lowercase">Lowercase (a-z)</label>
+                        <input type="checkbox" id="includeLowercase" checked>
+                        <label for="includeLowercase">Lowercase (a-z)</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="uppercase" checked>
-                        <label for="uppercase">Uppercase (A-Z)</label>
+                        <input type="checkbox" id="includeUppercase" checked>
+                        <label for="includeUppercase">Uppercase (A-Z)</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="numbers" checked>
-                        <label for="numbers">Numbers (0-9)</label>
+                        <input type="checkbox" id="includeNumbers" checked>
+                        <label for="includeNumbers">Numbers (0-9)</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="symbols" checked>
-                        <label for="symbols">Symbols (!@#$...)</label>
+                        <input type="checkbox" id="includeSymbols" checked>
+                        <label for="includeSymbols">Symbols (!@#$...)</label>
                     </div>
                 </div>
             </div>
@@ -193,79 +192,71 @@
         </form>
 
         <div id="result" class="result hidden">
-            <div class="password-display" id="passwordDisplay"></div>
+            <div class="password-display" id="generatedPassword"></div>
             <div class="strength-meter">
                 <div class="strength-fill" id="strengthFill"></div>
             </div>
             <div class="strength-text" id="strengthText"></div>
-            <button class="copy-btn" id="copyBtn">Copy to Clipboard</button>
+            <button class="copy-btn" id="copyButton">Copy to Clipboard</button>
         </div>
     </div>
 
-    <script src="./passwordGenerator.js"></script>
+    <script src="passwordGenerator.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('passwordForm');
             const resultDiv = document.getElementById('result');
-            const passwordDisplay = document.getElementById('passwordDisplay');
+            const generatedPassword = document.getElementById('generatedPassword');
             const strengthFill = document.getElementById('strengthFill');
             const strengthText = document.getElementById('strengthText');
-            const copyBtn = document.getElementById('copyBtn');
+            const copyButton = document.getElementById('copyButton');
+            
+            const generator = new PasswordGenerator();
 
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 const options = {
-                    length: parseInt(document.getElementById('length').value),
-                    lowercase: document.getElementById('lowercase').checked,
-                    uppercase: document.getElementById('uppercase').checked,
-                    numbers: document.getElementById('numbers').checked,
-                    symbols: document.getElementById('symbols').checked
+                    length: parseInt(document.getElementById('passwordLength').value),
+                    includeLowercase: document.getElementById('includeLowercase').checked,
+                    includeUppercase: document.getElementById('includeUppercase').checked,
+                    includeNumbers: document.getElementById('includeNumbers').checked,
+                    includeSymbols: document.getElementById('includeSymbols').checked
                 };
 
                 try {
-                    const generator = new PasswordGenerator();
                     const password = generator.generatePassword(options);
-                    const strength = generator.calculateStrength(password);
-                    const description = generator.getStrengthDescription(strength);
-
-                    // Display password
-                    passwordDisplay.textContent = password;
+                    const strengthScore = generator.calculateStrength(password);
+                    const strengthDescription = generator.getStrengthDescription(strengthScore);
+                    
+                    generatedPassword.textContent = password;
                     
                     // Update strength meter
-                    strengthFill.style.width = `${strength}%`;
-                    strengthFill.style.background = getStrengthColor(strength);
-                    strengthText.textContent = `Strength: ${description} (${strength}/100)`;
+                    const strengthPercent = (strengthScore / 4) * 100;
+                    strengthFill.style.width = strengthPercent + '%';
                     
-                    // Show result
+                    // Set color based on strength
+                    const colors = ['#dc3545', '#fd7e14', '#ffc107', '#20c997', '#198754'];
+                    strengthFill.style.background = colors[strengthScore];
+                    
+                    strengthText.textContent = `Strength: ${strengthDescription}`;
+                    
                     resultDiv.classList.remove('hidden');
-
                 } catch (error) {
-                    alert(`Error: ${error.message}`);
+                    alert('Error: ' + error.message);
                 }
             });
 
-            copyBtn.addEventListener('click', function() {
-                const password = passwordDisplay.textContent;
-                navigator.clipboard.writeText(password).then(() => {
-                    const originalText = copyBtn.textContent;
-                    copyBtn.textContent = 'Copied!';
-                    copyBtn.style.background = '#6c757d';
-                    
+            copyButton.addEventListener('click', function() {
+                const password = generatedPassword.textContent;
+                navigator.clipboard.writeText(password).then(function() {
+                    const originalText = copyButton.textContent;
+                    copyButton.textContent = 'Copied!';
                     setTimeout(() => {
-                        copyBtn.textContent = originalText;
-                        copyBtn.style.background = '';
+                        copyButton.textContent = originalText;
                     }, 2000);
                 });
             });
-
-            function getStrengthColor(score) {
-                if (score >= 80) return '#28a745';
-                if (score >= 60) return '#17a2b8';
-                if (score >= 40) return '#ffc107';
-                if (score >= 20) return '#fd7e14';
-                return '#dc3545';
-            }
         });
     </script>
 </body>
