@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "description": "A secure password generator with customizable length and character types",
   "main": "passwordGenerator.js",
+  "bin": {
+    "generate-password": "./cli.js"
+  },
   "scripts": {
-    "cli": "node cli.js",
+    "start": "node cli.js",
     "web": "open web-interface.html"
   },
   "keywords": [
     "password",
     "generator",
     "security",
-    "crypto"
+    "crypto",
+    "cli"
   ],
   "author": "Your Name",
   "license": "MIT",
